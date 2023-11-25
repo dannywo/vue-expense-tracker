@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "googleapis": "^128.0.0",
     "vue": "^3.3.4"
   },
   "devDependencies": {
