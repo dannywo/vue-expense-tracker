@@ -2,7 +2,7 @@
 import Header from "./components/Header.vue";
 import Balance from "./components/Balance.vue";
 import IncomeExpenses from "./components/IncomeExpenses.vue";
-import from "./components/TransactionList.vue"
+import TransactionList from "./components/TransactionList.vue";
 </script>
 
 <template>
