@@ -20,17 +20,24 @@ import AddTransaction from "./components/AddTransaction.vue";
 
 import { useToast } from "vue-toastification";
 
-import { ref } from "vue";
-import { computed } from "@vue/reactivity";
+import { ref, computed, onMounted } from "vue";
 
 const toast = useToast();
 
 const transactions = ref([
-    { id: 1, text: "Flowers", amount: -19.99 },
-    { id: 2, text: "Bi-Weekly Paycheck", amount: 2919.99 },
-    { id: 3, text: "Mortgage", amount: -1730.25 },
-    { id: 4, text: "Netflix", amount: -9.99 },
+    // { id: 1, text: "Flowers", amount: -19.99 },
+    // { id: 2, text: "Bi-Weekly Paycheck", amount: 2919.99 },
+    // { id: 3, text: "Mortgage", amount: -1730.25 },
+    // { id: 4, text: "Netflix", amount: -9.99 },
 ]);
+
+onMounted(() => {
+    const savedTransactions = JSON.parse(localStorage.getItem("transactions"));
+
+    if (savedTransactions) {
+        transactions.value = savedTransactions;
+    }
+});
 
 //Get total balance
 const total = computed(() => {
@@ -75,6 +82,8 @@ const handleTransactionSubmitted = (transaction: {
         amount: transaction.amount,
     });
 
+    saveTransactionsToLocalStorage();
+
     toast.success("Added successfully");
     console.log(generateId());
 };
@@ -85,11 +94,18 @@ const handleTransactionDeleted = (id: Number) => {
         return transaction.id !== id;
     });
 
+    saveTransactionsToLocalStorage();
+
     toast.success("Deleted successfully");
 };
 
 //generate unigue id
-const generateId = () => {
+const generateId = (): Number => {
     return Math.floor(Math.random() * 10000000);
+};
+
+//save to localStorage
+const saveTransactionsToLocalStorage = () => {
+    localStorage.setItem("transactions", JSON.stringify(transactions.value));
 };
 </script>
