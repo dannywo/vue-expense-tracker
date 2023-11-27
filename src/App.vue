@@ -24,19 +24,21 @@ import { ref, computed, onMounted } from "vue";
 
 const toast = useToast();
 
-type Transaction = {
-    id: Number;
-    text: String;
-    amount: number;
-};
+type Transaction = [
+    {
+        id: Number;
+        text: String;
+        amount: number;
+    }
+];
 
 const transactions = ref<Transaction[]>([]);
 
 onMounted(() => {
     const savedTransactions = JSON.parse(
-        localStorage.getItem("transactions") || "{}"
+        localStorage.getItem("transactions") || "[{}]"
     );
-
+    console.log(savedTransactions);
     if (savedTransactions) {
         transactions.value = savedTransactions;
     }
@@ -74,11 +76,9 @@ const expense = computed(() => {
 });
 
 //Add transaction
-const handleTransactionSubmitted = (transaction: {
-    text: string;
-    amount: number;
-}) => {
+const handleTransactionSubmitted = (transaction) => {
     console.log(transaction);
+    console.log(transactions.value);
     transactions.value.push({
         id: generateId(),
         text: transaction.text,
@@ -92,7 +92,7 @@ const handleTransactionSubmitted = (transaction: {
 };
 
 //Delete transaction
-const handleTransactionDeleted = (id: Number) => {
+const handleTransactionDeleted = (id) => {
     transactions.value = transactions.value.filter((transaction) => {
         return transaction.id !== id;
     });
