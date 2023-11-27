@@ -15,10 +15,34 @@ const transactions = ref([
     { id: 3, text: "Nutflix", amount: -9.99 },
 ]);
 
+//Get total balance
 const total = computed(() => {
     return transactions.value.reduce((acc, transaction) => {
         return acc + transaction.amount;
     }, 0);
+});
+
+//Get income
+const income = computed(() => {
+    return transactions.value
+        .filter((tran) => {
+            return tran.amount > 0;
+        })
+        .reduce((acc, transaction) => {
+            return acc + transaction.amount;
+        }, 0)
+        .toFixed(2);
+});
+//Get expenses
+const expense = computed(() => {
+    return transactions.value
+        .filter((tran) => {
+            return tran.amount < 0;
+        })
+        .reduce((acc, transaction) => {
+            return acc + transaction.amount;
+        }, 0)
+        .toFixed(2);
 });
 
 console.log(total.value);
@@ -27,8 +51,8 @@ console.log(total.value);
 <template>
     <Header></Header>
     <div class="container">
-        <Balance />
-        <IncomeExpenses />
+        <Balance :total="total" />
+        <IncomeExpenses :income="+income" :expense="+expense" />
         <TransactionList :transactions="transactions" />
         <AddTransaction />
     </div>
