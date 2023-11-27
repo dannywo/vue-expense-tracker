@@ -35,7 +35,7 @@ defineProps({
     },
 });
 
-const deleteTransaction = (id) => {
+const deleteTransaction = (id: Number) => {
     emit("transactionDeleted", id);
 };
 </script>
