@@ -1,3 +1,16 @@
+<template>
+    <Header></Header>
+    <div class="container">
+        <Balance :total="+total" />
+        <IncomeExpenses :income="+income" :expense="+expense" />
+        <TransactionList
+            :transactions="transactions"
+            @transactionDeleted="handleTransactionDeleted"
+        />
+        <AddTransaction @transactionSubmitted="handleTransactionSubmitted" />
+    </div>
+</template>
+
 <script setup lang="ts">
 import Header from "./components/Header.vue";
 import Balance from "./components/Balance.vue";
@@ -5,14 +18,18 @@ import IncomeExpenses from "./components/IncomeExpenses.vue";
 import TransactionList from "./components/TransactionList.vue";
 import AddTransaction from "./components/AddTransaction.vue";
 
+import { useToast } from "vue-toastification";
+
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
+
+const toast = useToast();
 
 const transactions = ref([
     { id: 1, text: "Flowers", amount: -19.99 },
     { id: 2, text: "Bi-Weekly Paycheck", amount: 2919.99 },
     { id: 3, text: "Mortgage", amount: -1730.25 },
-    { id: 3, text: "Nutflix", amount: -9.99 },
+    { id: 4, text: "Netflix", amount: -9.99 },
 ]);
 
 //Get total balance
@@ -33,6 +50,7 @@ const income = computed(() => {
         }, 0)
         .toFixed(2);
 });
+
 //Get expenses
 const expense = computed(() => {
     return transactions.value
@@ -45,15 +63,33 @@ const expense = computed(() => {
         .toFixed(2);
 });
 
-console.log(total.value);
-</script>
+//Add transaction
+const handleTransactionSubmitted = (transaction: {
+    text: string;
+    amount: number;
+}) => {
+    console.log(transaction);
+    transactions.value.push({
+        id: generateId(),
+        text: transaction.text,
+        amount: transaction.amount,
+    });
 
-<template>
-    <Header></Header>
-    <div class="container">
-        <Balance :total="total" />
-        <IncomeExpenses :income="+income" :expense="+expense" />
-        <TransactionList :transactions="transactions" />
-        <AddTransaction />
-    </div>
-</template>
+    toast.success("Added successfully");
+    console.log(generateId());
+};
+
+//Delete transaction
+const handleTransactionDeleted = (id: Number) => {
+    transactions.value = transactions.value.filter((transaction) => {
+        return transaction.id !== id;
+    });
+
+    toast.success("Deleted successfully");
+};
+
+//generate unigue id
+const generateId = () => {
+    return Math.floor(Math.random() * 10000000);
+};
+</script>
