@@ -24,15 +24,18 @@ import { ref, computed, onMounted } from "vue";
 
 const toast = useToast();
 
-const transactions = ref([
-    // { id: 1, text: "Flowers", amount: -19.99 },
-    // { id: 2, text: "Bi-Weekly Paycheck", amount: 2919.99 },
-    // { id: 3, text: "Mortgage", amount: -1730.25 },
-    // { id: 4, text: "Netflix", amount: -9.99 },
-]);
+type Transaction = {
+    id: Number;
+    text: String;
+    amount: number;
+};
+
+const transactions = ref<Transaction[]>([]);
 
 onMounted(() => {
-    const savedTransactions = JSON.parse(localStorage.getItem("transactions"));
+    const savedTransactions = JSON.parse(
+        localStorage.getItem("transactions") || "{}"
+    );
 
     if (savedTransactions) {
         transactions.value = savedTransactions;
